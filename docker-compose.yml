@@ -1,0 +1,72 @@
+version: "3"
+services:
+  ps:
+    container_name: prestashop
+    image: prestashop/prestashop:1.7-7.3-apache
+    ports:
+      - "8080:80"
+      - "8443:443"
+    environment:
+      DB_SERVER: ps_mariadb
+      DB_NAME: prestashop
+      DB_USER: prestashop
+      DB_PASSWD: Wikqokmuvxxc
+      PS_INSTALL_AUTO: 1
+      PS_INSTALL_DB: 1
+      PS_FOLDER_ADMIN: manager
+      PS_DOMAIN: localhost:8080
+      ADMIN_MAIL: your@email.com #CHANGE THIS!
+      ADMIN_PASSWD: Wikqokmuvxxc
+      PS_FOLDER_INSTALL: installed
+    volumes:
+     - ./modules/mymodulename:/var/www/html/modules/mymodulename
+    networks:
+      ps_backend:
+        ipv4_address: 10.113.0.10
+      ps_frontend:
+        ipv4_address: 10.113.1.10
+
+  db:
+    container_name: ps_mariadb
+    image: mariadb:10.5.8-focal
+    volumes:
+      - ./mysql/lib:/var/lib/mysql
+      - ./mysql/config:/etc/mysql/conf.d
+    environment:
+      MYSQL_ROOT_PASSWORD: Wikqokmuvxxc
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: prestashop
+      MYSQL_USER: prestashop
+      MYSQL_PASSWORD: Wikqokmuvxxc 
+    networks:
+      ps_backend:
+        ipv4_address: 10.113.0.20
+
+  adminer:
+    container_name: ps_adminer
+    image: adminer
+    ports:
+      - 8081:8080
+    networks:
+      ps_backend:
+        ipv4_address: 10.113.0.21
+      ps_frontend:
+        ipv4_address: 10.113.1.21
+
+networks:
+  ps_backend:
+    driver: bridge
+    internal: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.113.0.0/24 
+          gateway: 10.113.0.1
+  ps_frontend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.113.1.0/24
+          gateway: 10.113.1.1
+
