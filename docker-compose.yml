@@ -37,6 +37,7 @@ services:
   
   # Uncomment this if you are running linux or mac.
   # Mysql is not running correctly on Windows due to NTFS/ReFS and innodb AIO.
+  # On Windows, download and run it locally and use "host.docker.internal" as server in PS.
   
   # db:
   #   container_name: ps_mariadb
