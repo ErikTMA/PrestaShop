@@ -34,35 +34,38 @@ services:
     networks:
       - ps_backend
       - ps_frontend
+  
+  # Uncomment this if you are running linux or mac.
+  # Mysql is not running correctly on Windows due to NTFS/ReFS and innodb AIO.
+  
+  # db:
+  #   container_name: ps_mariadb
+  #   image: mysql:5.6
+  #   volumes:
+  #     - ./mysql/lib:/var/lib/mysql
+  #     - ./mysql/config:/etc/mysql/conf.d
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: Wikqokmuvxxc
+  #     MYSQL_ROOT_HOST: '%'
+  #     MYSQL_DATABASE: prestashop
+  #     MYSQL_USER: prestashop
+  #     MYSQL_PASSWORD: Wikqokmuvxxc 
+  #   networks:
+  #     - ps_backend
+  #   cap_add:
+  #     - SYS_NICE
+  #   security_opt:
+  #     - seccomp:unconfined
 
-  db:
-    container_name: ps_mariadb
-    image: mysql:5.6
-    volumes:
-      - ./mysql/lib:/var/lib/mysql
-      - ./mysql/config:/etc/mysql/conf.d
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: Wikqokmuvxxc
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_DATABASE: prestashop
-      MYSQL_USER: prestashop
-      MYSQL_PASSWORD: Wikqokmuvxxc 
-    networks:
-      - ps_backend
-    cap_add:
-      - SYS_NICE
-    security_opt:
-      - seccomp:unconfined
-
-  adminer:
-    container_name: ps_adminer
-    image: adminer
-    ports:
-      - 8081:8080
-    networks:
-      - ps_backend
-      - ps_frontend
+  # adminer:
+  #   container_name: ps_adminer
+  #   image: adminer
+  #   ports:
+  #     - 8081:8080
+  #   networks:
+  #     - ps_backend
+  #     - ps_frontend
 
 networks:
   ps_backend:
