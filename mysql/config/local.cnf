@@ -1,0 +1,4 @@
+[mysqld]
+default-storage-engine=MyISAM
+default_tmp_storage_engine=MyISAM
+
