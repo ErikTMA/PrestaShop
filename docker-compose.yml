@@ -1,77 +1,81 @@
 version: "3"
 services:
-  # ps:
-  #   container_name: prestashop
-  #   image: bitnami/prestashop:latest
-  #   ports:
-  #     - "8080:8080"
-  #     - "8443:8443"
-  #   environment:
-  #     PRESTASHOP_DATABASE_USER: prestashop
-  #     PRESTASHOP_DATABASE_PASSWORD: Wikqokmuvxxc
-  #     PRESTASHOP_DATABASE_NAME: prestashop 
-  #     PRESTASHOP_DATABASE_HOST: ps_mariadb
-  #     APACHE_HTTP_PORT_NUMBER: 8080
-  #     APACHE_HTTPS_PORT_NUMBER: 8443
-  #     PRESTASHOP_FIRST_NAME: Super
-  #     PRESTASHOP_LAST_NAME: Admin
-  #     PRESTASHOP_PASSWORD: SuperSecret
-  #     PRESTASHOP_HOST: 127.0.0.1:8080
-  #     PRESTASHOP_COOKIE_CHECK_IP: 0
-  #     PRESTASHOP_EMAIL: user@example.com
-
-
-    # volumes:
-    #  - ./ps:/bitnami/prestashop
   ps:
     container_name: prestashop
-    build: .
+    image: bitnami/prestashop:latest
     ports:
-      - 8080:80
-      - 8443:443
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      PRESTASHOP_DATABASE_USER: prestashop
+      PRESTASHOP_DATABASE_PASSWORD: Wikqokmuvxxc
+      PRESTASHOP_DATABASE_NAME: prestashop 
+      PRESTASHOP_DATABASE_HOST: ps_mariadb
+      APACHE_HTTP_PORT_NUMBER: 8080
+      APACHE_HTTPS_PORT_NUMBER: 8443
+      PRESTASHOP_FIRST_NAME: Super
+      PRESTASHOP_LAST_NAME: Admin
+      PRESTASHOP_PASSWORD: SuperSecret
+      PRESTASHOP_HOST: 127.0.0.1:8080
+      PRESTASHOP_COOKIE_CHECK_IP: 0
+      PRESTASHOP_EMAIL: user@example.com
     volumes:
-      - ./ps:/var/www/html
+     - ./ps:/bitnami/prestashop
     networks:
       - ps_backend
       - ps_frontend
+  # ps:
+  #   container_name: prestashop
+  #   build: .
+  #   ports:
+  #     - 8080:80
+  #     - 8443:443
+  #   volumes:
+  #     - ./ps:/var/www/html
+  #   networks:
+  #     - ps_backend
+  #     - ps_frontend
   
   # Uncomment this if you are running linux or mac.
   # Mysql is not running correctly on Windows due to NTFS/ReFS and innodb AIO.
   # On Windows, download and run it locally and use "host.docker.internal" as server in PS.
   
-  # db:
-  #   container_name: ps_mariadb
-  #   image: mysql:5.6
-  #   volumes:
-  #     - ./mysql/lib:/var/lib/mysql
-  #     - ./mysql/config:/etc/mysql/conf.d
-  #   command: --default-authentication-plugin=mysql_native_password
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: Wikqokmuvxxc
-  #     MYSQL_ROOT_HOST: '%'
-  #     MYSQL_DATABASE: prestashop
-  #     MYSQL_USER: prestashop
-  #     MYSQL_PASSWORD: Wikqokmuvxxc 
-  #   networks:
-  #     - ps_backend
-  #   cap_add:
-  #     - SYS_NICE
-  #   security_opt:
-  #     - seccomp:unconfined
+  db:
+    container_name: ps_mariadb
+    image: bitnami/mariadb:latest
+    volumes:
+      - ./mysql/config:/bitnami/mariadb
+    #command: --default-authentication-plugin=mysql_native_password
+    environment:
+      ALLOW_EMPTY_PASSWORD: 1
+      MARIADB_USER: prestashop
+      MARIADB_PASSWORD: Wikqokmuvxxc
+      MARIADB_DATABASE: prestashop
+    networks:
+      - ps_backend
+    cap_add:
+      - SYS_NICE
+    security_opt:
+      - seccomp:unconfined
 
-  # adminer:
-  #   container_name: ps_adminer
-  #   image: adminer
-  #   ports:
-  #     - 8081:8080
-  #   networks:
-  #     - ps_backend
-  #     - ps_frontend
+  adminer:
+    container_name: ps_adminer
+    image: adminer
+    ports:
+      - 8081:8080
+    networks:
+      - ps_backend
+      - ps_frontend
 
 networks:
   ps_backend:
     driver: bridge
     internal: true
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.13.0.0/24
+        gateway: 172.13.0.1
   ps_frontend:
     driver: bridge
 
